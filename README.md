@@ -18,12 +18,12 @@ Make a GET call and print the result:
 ```rust
 extern crate ease;
 
-use ease::RestClient;
+use ease::{Url, RestClient};
 
 fn main() {
+    let url = Url::parse("http://httpbin.org/get").unwrap();
     println!("{}",
-             RestClient::new("http://httpbin.org/get")
-                        .ok().expect("Couldn't parse URL.")
+             RestClient::new(url)
                         .get()
                         .unwrap()
             );
@@ -39,7 +39,7 @@ extern crate serde;
 extern crate ease;
 
 use std::collections::HashMap;
-use ease::RestClient;
+use ease::{Url, RestClient};
 
 #[derive(Deserialize, Debug)]
 struct Response {
@@ -54,9 +54,9 @@ struct Response {
 }
 
 fn main() {
+    let url = Url::parse("http://httpbin.org/post").unwrap();
     println!("{:?}",
-             RestClient::new("http://httpbin.org/post")
-                        .ok().expect("Couldn't parse URL.")
+             RestClient::new(url)
                         .post_json_as::<Response>()
         );
 }

@@ -3,7 +3,6 @@ extern crate url;
 extern crate serde;
 
 use std::io::{Read, Write};
-use url::{Url, ParseError};
 use hyper::error::Error;
 use hyper::client::Request;
 use hyper::method::Method;
@@ -11,6 +10,7 @@ use hyper::net::Fresh;
 use serde::json::{self, Value, from_value};
 use serde::Deserialize;
 pub use hyper::header::*;
+pub use url::Url;
 
 
 pub struct RestClient<'a> {
@@ -20,10 +20,10 @@ pub struct RestClient<'a> {
     headers: Option<Headers>,
 }
 
+/// Constructs a new RestClient.
 impl<'a> RestClient<'a> {
-    pub fn new(url_str: &'a str) -> Result<RestClient<'a>, ParseError> {
-        let url = try!(Url::parse(url_str));
-        Ok(RestClient { url: url, params: None, body: None, headers: None })
+    pub fn new(url: Url) -> RestClient<'a> {
+        RestClient { url: url, params: None, body: None, headers: None }
     }
 
     pub fn param(&'a mut self, param: (&'a str, &'a str)) -> &'a mut RestClient<'a> {

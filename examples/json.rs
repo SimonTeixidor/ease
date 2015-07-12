@@ -5,7 +5,7 @@ extern crate serde;
 extern crate ease;
 
 use std::collections::HashMap;
-use ease::RestClient;
+use ease::{Url, RestClient};
 
 #[derive(Deserialize, Debug)]
 struct Response {
@@ -19,16 +19,17 @@ struct Response {
     url: String
 }
 
-fn main() {
+fn main() 
+{
+    let url = Url::parse("http://httpbin.org/post").unwrap();
     println!("{:?}",
-             RestClient::new("http://httpbin.org/post")
-                        .ok().expect("Couldn't parse URL.")
+             RestClient::new(url)
                         .post_json_as::<Response>()
         );
-    
+   
+    let url = Url::parse("http://httpbin.org/get").unwrap();
     println!("{:?}",
-             RestClient::new("http://httpbin.org/get")
-                        .ok().expect("Couldn't parse URL.")
+             RestClient::new(url)
                         .get_json_as::<Response>()
         );
 }
