@@ -54,13 +54,13 @@ impl<'a, H: Header + HeaderFormat> Client<'a, H> {
     }
 
     pub fn get(&mut self) -> Result<String, Error> {
-        let mut url = self.url.as_mut().expect("You must set a URL before sending request!");
+        let mut url = self.url.clone().expect("You must set a URL before sending request!");
 
         if let Some(ref params) = self.params {
             url.set_query_from_pairs(params.into_iter().map(|&x| x));
         }
 
-        let mut req = try!(Request::new(Method::Get, url.clone()));
+        let mut req = try!(Request::new(Method::Get, url));
 
         if let Some(headers) = self.headers.as_ref() {
            for header in headers {
