@@ -9,7 +9,9 @@ use hyper::method::Method;
 use hyper::net::Fresh;
 use serde::json::{self, Value, from_value};
 use serde::Deserialize;
+#[doc(no_inline)]
 pub use hyper::header::*;
+#[doc(no_inline)]
 pub use url::Url;
 
 
@@ -20,12 +22,16 @@ pub struct RestClient<'a> {
     headers: Option<Headers>,
 }
 
-/// Constructs a new RestClient.
 impl<'a> RestClient<'a> {
+    /// Constructs a new RestClient.
     pub fn new(url: Url) -> RestClient<'a> {
         RestClient { url: url, params: None, body: None, headers: None }
     }
 
+    /// Sets one parameter. On a GET or DELETE request, this parameter will
+    /// be stored in the URL. On a POST or PUT request, it is stored in the
+    /// body of the request. Hence, if you call this method on a POST or 
+    /// PUT request, you cannot also call `body`.
     pub fn param(&'a mut self, param: (&'a str, &'a str)) -> &'a mut RestClient<'a> {
         if let Some(ref mut p) = self.params {
             p.push(param);
@@ -39,11 +45,14 @@ impl<'a> RestClient<'a> {
         self
     }
 
+    /// Writes a `String` to the body of the request. Don't call this
+    /// method if you also call `param` on a PUT or POST request.
     pub fn body(&'a mut self, body: String) -> &'a mut RestClient<'a> {
         self.body = Some(body);
         self
     }
 
+    /// Sets a header for the request.
     pub fn header<H: Header + HeaderFormat>(&'a mut self, header: H) -> &'a mut RestClient<'a> {
         if let Some(ref mut h) = self.headers {
             h.set(header);
@@ -75,6 +84,8 @@ impl<'a> RestClient<'a> {
         Ok(response_string)
     }
 
+    /// Sends a GET request and returns either an error
+    /// or a `String` of the response.
     pub fn get(&mut self) -> Result<String, hyper::Error> {
         let mut url = self.url.clone();
 
@@ -86,12 +97,16 @@ impl<'a> RestClient<'a> {
         self.send_request(req)
     }
 
+    /// Sends a GET request and returns either an error
+    /// or a `T` representing the response, deserialised from JSON.
     pub fn get_json_as<T: Deserialize>(&mut self) -> Result<T, String> {
         let body = try!(self.get().map_err(|err| err.to_string()));
         let val: Value = try!(json::from_str(&*body).map_err(|err| err.to_string()));
         from_value(val).map_err(|err| err.to_string())
     }
 
+    /// Sends a DELETE request and returns either an error
+    /// or a `String` of the response.
     pub fn delete(&mut self) -> Result<String, Error> {
         let mut url = self.url.clone();
 
@@ -103,12 +118,16 @@ impl<'a> RestClient<'a> {
         self.send_request(req)
     }
 
+    /// Sends a DELETE request and returns either an error
+    /// or a `T` representing the response, deserialised from JSON.
     pub fn delete_json_as<T: Deserialize>(&mut self) -> Result<T, String> {
         let body = try!(self.delete().map_err(|err| err.to_string()));
         let val: Value = try!(json::from_str(&*body).map_err(|err| err.to_string()));
         from_value(val).map_err(|err| err.to_string())
     }
 
+    /// Sends a POST request and returns either an error
+    /// or a `String` of the response.
     pub fn post(&mut self) -> Result<String, Error> {
         let url = self.url.clone();
 
@@ -120,12 +139,16 @@ impl<'a> RestClient<'a> {
         self.send_request(req)
     }
 
+    /// Sends a POST request and returns either an error
+    /// or a `T` representing the response, deserialised from JSON.
     pub fn post_json_as<T: Deserialize>(&mut self) -> Result<T, String> {
         let body = try!(self.post().map_err(|err| err.to_string()));
         let val: Value = try!(json::from_str(&*body).map_err(|err| err.to_string()));
         from_value(val).map_err(|err| err.to_string())
     }
 
+    /// Sends a PUT request and returns either an error
+    /// or a `String` of the response.
     pub fn put(&mut self) -> Result<String, Error> {
         let url = self.url.clone();
 
@@ -137,6 +160,8 @@ impl<'a> RestClient<'a> {
         self.send_request(req)
     }
 
+    /// Sends a PUT request and returns either an error
+    /// or a `T` representing the response, deserialised from JSON.
     pub fn put_json_as<T: Deserialize>(&mut self) -> Result<T, String> {
         let body = try!(self.put().map_err(|err| err.to_string()));
         let val: Value = try!(json::from_str(&*body).map_err(|err| err.to_string()));

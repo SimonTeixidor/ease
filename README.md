@@ -62,6 +62,12 @@ fn main() {
 }
 ```
 
+[Documentation](http://simonpersson.github.io/ease/)
+====================================================
+
+Documentation is available online and can be built with `cargo doc`
+for a local copy.
+
 License
 =======
 
