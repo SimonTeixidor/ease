@@ -1,5 +1,6 @@
 extern crate hyper;
 extern crate url;
+extern crate serde;
 
 use std::io::{Read, Write};
 use url::{Url, ParseError};
@@ -7,7 +8,10 @@ use hyper::error::Error;
 use hyper::client::Request;
 use hyper::method::Method;
 use hyper::net::Fresh;
+use serde::json::{self, Value, from_value};
+use serde::Deserialize;
 pub use hyper::header::*;
+
 
 pub struct RestClient<'a> {
     url: Url,
@@ -71,7 +75,7 @@ impl<'a> RestClient<'a> {
         Ok(response_string)
     }
 
-    pub fn get(&mut self) -> Result<String, Error> {
+    pub fn get(&mut self) -> Result<String, hyper::Error> {
         let mut url = self.url.clone();
 
         if let Some(ref params) = self.params {
@@ -80,6 +84,12 @@ impl<'a> RestClient<'a> {
 
         let req = try!(Request::new(Method::Get, url));
         self.send_request(req)
+    }
+
+    pub fn get_json_as<T: Deserialize>(&mut self) -> Result<T, String> {
+        let body = try!(self.get().map_err(|err| err.to_string()));
+        let val: Value = try!(json::from_str(&*body).map_err(|err| err.to_string()));
+        from_value(val).map_err(|err| err.to_string())
     }
 
     pub fn delete(&mut self) -> Result<String, Error> {
@@ -93,6 +103,12 @@ impl<'a> RestClient<'a> {
         self.send_request(req)
     }
 
+    pub fn delete_json_as<T: Deserialize>(&mut self) -> Result<T, String> {
+        let body = try!(self.delete().map_err(|err| err.to_string()));
+        let val: Value = try!(json::from_str(&*body).map_err(|err| err.to_string()));
+        from_value(val).map_err(|err| err.to_string())
+    }
+
     pub fn post(&mut self) -> Result<String, Error> {
         let url = self.url.clone();
 
@@ -102,6 +118,12 @@ impl<'a> RestClient<'a> {
 
         let req = try!(Request::new(Method::Post, url));
         self.send_request(req)
+    }
+
+    pub fn post_json_as<T: Deserialize>(&mut self) -> Result<T, String> {
+        let body = try!(self.post().map_err(|err| err.to_string()));
+        let val: Value = try!(json::from_str(&*body).map_err(|err| err.to_string()));
+        from_value(val).map_err(|err| err.to_string())
     }
     
     pub fn put(&mut self) -> Result<String, Error> {
@@ -113,5 +135,11 @@ impl<'a> RestClient<'a> {
 
         let req = try!(Request::new(Method::Put, url));
         self.send_request(req)
+    }
+
+    pub fn put_json_as<T: Deserialize>(&mut self) -> Result<T, String> {
+        let body = try!(self.put().map_err(|err| err.to_string()));
+        let val: Value = try!(json::from_str(&*body).map_err(|err| err.to_string()));
+        from_value(val).map_err(|err| err.to_string())
     }
 }

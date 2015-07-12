@@ -5,4 +5,6 @@ authors = ["Simon Persson <simon@flaskpost.org>"]
 
 [dependencies]
 hyper = "*"
-url = "*"	
+url = "*"
+serde = "*"
+serde_macros = "*"
