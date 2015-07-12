@@ -1,7 +1,11 @@
 [package]
+description = "A library for building REST clients"
+repository = "https://github.com/SimonPersson/ease"
 name = "ease"
 version = "0.1.0"
 authors = ["Simon Persson <simon@flaskpost.org>"]
+keywords = ["rest", "api", "client", "web"]
+license = "MIT"
 
 [dependencies]
 hyper = "*"
