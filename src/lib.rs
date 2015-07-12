@@ -10,7 +10,7 @@ use hyper::method::Method;
 pub use hyper::header::*;
 
 pub struct Client<'a, H: Header + HeaderFormat> {
-    url: Option<Url>,
+    url: Url,
     params: Option<Vec<(&'a str, &'a str)>>,
     body: Option<&'a str>,
     headers: Option<Vec<H>>,
@@ -19,7 +19,7 @@ pub struct Client<'a, H: Header + HeaderFormat> {
 impl<'a, H: Header + HeaderFormat> Client<'a, H> {
     pub fn new(url_str: &'a str) -> Result<Client<'a, H>, ParseError> {
         let url = try!(Url::parse(url_str));
-        Ok(Client { url: Some(url), params: None, body: None, headers: None })
+        Ok(Client { url: url, params: None, body: None, headers: None })
     }
 
     pub fn param(&'a mut self, param: (&'a str, &'a str)) -> &'a mut Client<'a, H> {
@@ -54,7 +54,7 @@ impl<'a, H: Header + HeaderFormat> Client<'a, H> {
     }
 
     pub fn get(&mut self) -> Result<String, Error> {
-        let mut url = self.url.clone().expect("You must set a URL before sending request!");
+        let mut url = self.url.clone();
 
         if let Some(ref params) = self.params {
             url.set_query_from_pairs(params.into_iter().map(|&x| x));
