@@ -82,6 +82,17 @@ impl<'a> Client<'a> {
         self.send_request(req)
     }
 
+    pub fn delete(&mut self) -> Result<String, Error> {
+        let mut url = self.url.clone();
+
+        if let Some(ref params) = self.params {
+            url.set_query_from_pairs(params.into_iter().map(|&x| x));
+        }
+
+        let req = try!(Request::new(Method::Delete, url));
+        self.send_request(req)
+    }
+
     pub fn post(&mut self) -> Result<String, Error> {
         let url = self.url.clone();
 
@@ -90,6 +101,17 @@ impl<'a> Client<'a> {
         }
 
         let req = try!(Request::new(Method::Post, url));
+        self.send_request(req)
+    }
+    
+    pub fn put(&mut self) -> Result<String, Error> {
+        let url = self.url.clone();
+
+        if let Some(ref params) = self.params {
+            self.body = Some(url::form_urlencoded::serialize(params.into_iter()));
+        }
+
+        let req = try!(Request::new(Method::Put, url));
         self.send_request(req)
     }
 }
