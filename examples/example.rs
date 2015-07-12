@@ -20,9 +20,6 @@ fn main() {
     println!("{}", 
              Client::new("http://httpbin.org/post")
                         .ok().expect("Couldn't parse URL.")
-                        .header(
-                            UserAgent("FooBarApp/2.0".to_owned())
-                            )
                         .param(("foo", "bar"))
                         .post()
                         .unwrap()

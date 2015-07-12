@@ -9,20 +9,20 @@ use hyper::method::Method;
 use hyper::net::Fresh;
 pub use hyper::header::*;
 
-pub struct Client<'a, H: Header + HeaderFormat> {
+pub struct Client<'a> {
     url: Url,
     params: Option<Vec<(&'a str, &'a str)>>,
     body: Option<String>,
-    headers: Option<Vec<H>>,
+    headers: Option<Headers>,
 }
 
-impl<'a, H: Header + HeaderFormat> Client<'a, H> {
-    pub fn new(url_str: &'a str) -> Result<Client<'a, H>, ParseError> {
+impl<'a> Client<'a> {
+    pub fn new(url_str: &'a str) -> Result<Client<'a>, ParseError> {
         let url = try!(Url::parse(url_str));
         Ok(Client { url: url, params: None, body: None, headers: None })
     }
 
-    pub fn param(&'a mut self, param: (&'a str, &'a str)) -> &'a mut Client<'a, H> {
+    pub fn param(&'a mut self, param: (&'a str, &'a str)) -> &'a mut Client<'a> {
         if let Some(ref mut p) = self.params {
             p.push(param);
         }
@@ -35,19 +35,19 @@ impl<'a, H: Header + HeaderFormat> Client<'a, H> {
         self
     }
 
-    pub fn body(&'a mut self, body: String) -> &'a mut Client<'a, H> {
+    pub fn body(&'a mut self, body: String) -> &'a mut Client<'a> {
         self.body = Some(body);
         self
     }
 
-    pub fn header(&'a mut self, header: H) -> &'a mut Client<'a, H> {
+    pub fn header<H: Header + HeaderFormat>(&'a mut self, header: H) -> &'a mut Client<'a> {
         if let Some(ref mut h) = self.headers {
-            h.push(header);
+            h.set(header);
         }
         else
         {
-            let mut v = Vec::new();
-            v.push(header);
+            let mut v = Headers::new();
+            v.set(header);
             self.headers = Some(v);
         }
         self
@@ -55,9 +55,7 @@ impl<'a, H: Header + HeaderFormat> Client<'a, H> {
 
     fn send_request(&mut self, mut req: Request<Fresh>) -> Result<String, Error> {
         if let Some(headers) = self.headers.as_ref() {
-            for header in headers {
-                req.headers_mut().set(header.clone());
-           }
+            req.headers_mut().extend(headers.iter());
         }
 
         let mut req = try!(req.start());
