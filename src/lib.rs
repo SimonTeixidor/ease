@@ -71,13 +71,13 @@ impl<'a, H: Header + HeaderFormat> Client<'a, H> {
         let mut req = try!(req.start());
 
         if let Some(body) = self.body {
-           req.write(body.as_bytes());
+           try!(req.write_all(body.as_bytes()));
        }
 
         let mut resp = try!(req.send());
 
         let mut response_string = String::new();
-        resp.read_to_string(&mut response_string);
+        try!(resp.read_to_string(&mut response_string));
         Ok(response_string)
     }
 }
