@@ -1,11 +1,11 @@
 
 extern crate ease;
 
-use ease::Client;
+use ease::RestClient;
 
 fn main() {
     println!("{}", 
-             Client::new("http://httpbin.org/get")
+             RestClient::new("http://httpbin.org/get")
                         .ok().expect("Couldn't parse URL.")
                         .get()
                         .unwrap()
@@ -14,7 +14,7 @@ fn main() {
     println!("\n");
 
     println!("{}", 
-             Client::new("http://httpbin.org/post")
+             RestClient::new("http://httpbin.org/post")
                         .ok().expect("Couldn't parse URL.")
                         .param(("foo", "bar"))
                         .post()
@@ -22,7 +22,7 @@ fn main() {
             );
 
     println!("{}", 
-             Client::new("http://httpbin.org/put")
+             RestClient::new("http://httpbin.org/put")
                         .ok().expect("Couldn't parse URL.")
                         .param(("foo", "bar"))
                         .put()
@@ -30,7 +30,7 @@ fn main() {
             );
 
     println!("{}", 
-             Client::new("http://httpbin.org/delete")
+             RestClient::new("http://httpbin.org/delete")
                         .ok().expect("Couldn't parse URL.")
                         .param(("foo", "bar"))
                         .delete()

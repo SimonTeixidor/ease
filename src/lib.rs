@@ -9,20 +9,20 @@ use hyper::method::Method;
 use hyper::net::Fresh;
 pub use hyper::header::*;
 
-pub struct Client<'a> {
+pub struct RestClient<'a> {
     url: Url,
     params: Option<Vec<(&'a str, &'a str)>>,
     body: Option<String>,
     headers: Option<Headers>,
 }
 
-impl<'a> Client<'a> {
-    pub fn new(url_str: &'a str) -> Result<Client<'a>, ParseError> {
+impl<'a> RestClient<'a> {
+    pub fn new(url_str: &'a str) -> Result<RestClient<'a>, ParseError> {
         let url = try!(Url::parse(url_str));
-        Ok(Client { url: url, params: None, body: None, headers: None })
+        Ok(RestClient { url: url, params: None, body: None, headers: None })
     }
 
-    pub fn param(&'a mut self, param: (&'a str, &'a str)) -> &'a mut Client<'a> {
+    pub fn param(&'a mut self, param: (&'a str, &'a str)) -> &'a mut RestClient<'a> {
         if let Some(ref mut p) = self.params {
             p.push(param);
         }
@@ -35,12 +35,12 @@ impl<'a> Client<'a> {
         self
     }
 
-    pub fn body(&'a mut self, body: String) -> &'a mut Client<'a> {
+    pub fn body(&'a mut self, body: String) -> &'a mut RestClient<'a> {
         self.body = Some(body);
         self
     }
 
-    pub fn header<H: Header + HeaderFormat>(&'a mut self, header: H) -> &'a mut Client<'a> {
+    pub fn header<H: Header + HeaderFormat>(&'a mut self, header: H) -> &'a mut RestClient<'a> {
         if let Some(ref mut h) = self.headers {
             h.set(header);
         }
