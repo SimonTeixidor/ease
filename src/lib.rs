@@ -125,7 +125,7 @@ impl<'a> RestClient<'a> {
         let val: Value = try!(json::from_str(&*body).map_err(|err| err.to_string()));
         from_value(val).map_err(|err| err.to_string())
     }
-    
+
     pub fn put(&mut self) -> Result<String, Error> {
         let url = self.url.clone();
 

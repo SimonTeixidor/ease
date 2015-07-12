@@ -16,17 +16,16 @@ struct Response {
     headers: HashMap<String, String>,
     json: Option<String>,
     origin: String,
-    url: String
+    url: String,
 }
 
-fn main() 
-{
+fn main() {
     let url = Url::parse("http://httpbin.org/post").unwrap();
     println!("{:?}",
              RestClient::new(url)
                         .post_json_as::<Response>()
         );
-   
+
     let url = Url::parse("http://httpbin.org/get").unwrap();
     println!("{:?}",
              RestClient::new(url)
