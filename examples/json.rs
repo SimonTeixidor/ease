@@ -1,13 +1,10 @@
-#![feature(custom_derive, plugin)]
-#![plugin(serde_macros)]
-
-extern crate serde;
 extern crate ease;
+extern crate rustc_serialize;
 
 use std::collections::HashMap;
 use ease::{Url, RestClient};
 
-#[derive(Deserialize, Debug)]
+#[derive(RustcDecodable, Debug)]
 struct Response {
     args: HashMap<String, String>,
     data: Option<String>,

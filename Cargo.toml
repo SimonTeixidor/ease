@@ -11,8 +11,4 @@ license = "MIT"
 [dependencies]
 hyper = "*"
 url = "*"
-serde = "*"
-serde_macros = "*"
-
-[features]
-nightly = []
+rustc-serialize = "*"

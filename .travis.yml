@@ -10,7 +10,8 @@ addons:
 
 # run builds for both all the trains
 rust:
-  - nightly
+  - stable
+  - beta
 
 # load travis-cargo
 before_script:
@@ -23,11 +24,11 @@ script:
   - |
       travis-cargo build &&
       travis-cargo test &&
-      travis-cargo doc
+      travis-cargo --only stable doc
 after_success:
   # upload the documentation from the build with beta (automatically only actually
   # runs on the master branch)
-  - travis-cargo doc-upload
+    - travis-cargo --only stable doc-upload
 env:
   global:
     - TRAVIS_CARGO_NIGHTLY_FEATURE=nightly
