@@ -13,3 +13,6 @@ hyper = "*"
 url = "*"
 serde = "*"
 serde_macros = "*"
+
+[features]
+nightly = []
