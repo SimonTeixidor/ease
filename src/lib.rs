@@ -15,7 +15,7 @@ pub use url::Url;
 #[doc(no_inline)]
 pub use hyper::error::Error;
 
-
+#[derive(Clone)]
 pub struct RestClient<'a> {
     url: Url,
     params: Option<Vec<(&'a str, &'a str)>>,

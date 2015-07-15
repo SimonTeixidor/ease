@@ -6,6 +6,7 @@ fn main() {
     let url = Url::parse("http://httpbin.org/get").unwrap();
     println!("{}",
              RestClient::new(url)
+                        .param(("YAYA", "NENE"))
                         .get()
                         .unwrap()
             );
