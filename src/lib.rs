@@ -3,7 +3,6 @@ extern crate url;
 extern crate serde;
 
 use std::io::{Read, Write};
-use hyper::error::Error;
 use hyper::client::Request;
 use hyper::method::Method;
 use hyper::net::Fresh;
@@ -13,6 +12,8 @@ use serde::Deserialize;
 pub use hyper::header::*;
 #[doc(no_inline)]
 pub use url::Url;
+#[doc(no_inline)]
+pub use hyper::error::Error;
 
 
 pub struct RestClient<'a> {
