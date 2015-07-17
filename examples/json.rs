@@ -8,8 +8,8 @@ use ease::{Url, RestClient};
 struct Response {
     args: HashMap<String, String>,
     data: Option<String>,
-    files: HashMap<String, String>,
-    form: HashMap<String, String>,
+    files: Option<HashMap<String, String>>,
+    form: Option<HashMap<String, String>>,
     headers: HashMap<String, String>,
     json: Option<String>,
     origin: String,
@@ -26,6 +26,6 @@ fn main() {
     let url = Url::parse("http://httpbin.org/get").unwrap();
     println!("{:?}",
              RestClient::new(url)
-                        .get_json_as::<Response>()
+                        .get()
         );
 }
