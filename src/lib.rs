@@ -33,14 +33,14 @@ impl<'a> RestClient<'a> {
     /// be stored in the URL. On a POST or PUT request, it is stored in the
     /// body of the request. Hence, if you call this method on a POST or 
     /// PUT request, you cannot also call `body`.
-    pub fn param(&'a mut self, param: (&'a str, &'a str)) -> &'a mut RestClient<'a> {
+    pub fn param(&'a mut self, key: &'a str, value: &'a str) -> &'a mut RestClient<'a> {
         if let Some(ref mut p) = self.params {
-            p.push(param);
+            p.push((key, value));
         }
         else
         {
             let mut v = Vec::new();
-            v.push(param);
+            v.push((key, value));
             self.params = Some(v);
         }
         self

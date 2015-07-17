@@ -6,7 +6,7 @@ fn main() {
     let url = Url::parse("http://httpbin.org/get").unwrap();
     println!("{}",
              RestClient::new(url)
-                        .param(("YAYA", "NENE"))
+                        .param("YAYA", "NENE")
                         .get()
                         .unwrap()
             );
@@ -16,7 +16,7 @@ fn main() {
     let url = Url::parse("http://httpbin.org/post").unwrap();
     println!("{}",
              RestClient::new(url)
-                        .param(("foo", "bar"))
+                        .param("foo", "bar")
                         .post()
                         .unwrap()
             );
@@ -24,7 +24,7 @@ fn main() {
     let url = Url::parse("http://httpbin.org/put").unwrap();
     println!("{}",
              RestClient::new(url)
-                        .param(("foo", "bar"))
+                        .param("foo", "bar")
                         .put()
                         .unwrap()
             );
@@ -32,7 +32,7 @@ fn main() {
     let url = Url::parse("http://httpbin.org/delete").unwrap();
     println!("{}",
              RestClient::new(url)
-                        .param(("foo", "bar"))
+                        .param("foo", "bar")
                         .delete()
                         .unwrap()
             );
