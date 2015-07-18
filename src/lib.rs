@@ -46,6 +46,29 @@ impl<'a> RestClient<'a> {
         self
     }
 
+    /// Sets many parameters. On a GET or DELETE request, these parameters will
+    /// be stored in the URL. On a POST or PUT request, they are stored in the
+    /// body of the request. Hence, if you call this method on a POST or 
+    /// PUT request, you cannot also call `body`.
+    pub fn params<T>(&'a mut self, values: T)
+        -> &'a mut RestClient<'a>
+        where T: IntoIterator<Item=(&'a str, &'a str)> {
+        if let Some(ref mut p) = self.params {
+            for value in values {
+                p.push(value);
+            }
+        }
+        else
+        {
+            let mut v = Vec::new();
+            for value in values {
+                v.push(value);
+            }
+            self.params = Some(v);
+        }
+        self
+    }
+
     /// Writes a `String` to the body of the request. Don't call this
     /// method if you also call `param` on a PUT or POST request.
     pub fn body(&'a mut self, body: String) -> &'a mut RestClient<'a> {
