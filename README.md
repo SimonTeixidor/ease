@@ -6,11 +6,6 @@ are constructed with an easy to use builder pattern and JSON
 responses can be automatically deserialised into a matching
 struct.
 
-The library build on both stable and nightly rust. However,
-deserialising JSON is a bit awkward without featurs from nightly,
-see [Serde](https://github.com/serde-rs/serde#serialization-without-macros)
-for information about that.
-
 Examples
 ========
 
