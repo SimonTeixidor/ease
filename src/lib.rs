@@ -125,7 +125,11 @@ impl<'a> RestClient<'a> {
     /// or a `T` representing the response, deserialised from JSON.
     pub fn get_json_as<T: Decodable>(&mut self) -> Result<T, String> {
         let body = try!(self.get().map_err(|err| err.to_string()));
-        json::decode(&*body).map_err(|err| err.to_string())
+        json::decode(&*body).map_err(|err| format!("{}. Server response: {}",
+                                                       err.to_string(),
+                                                       body
+                                                   )
+                                     )
     }
 
     /// Sends a DELETE request and returns either an error
@@ -145,7 +149,11 @@ impl<'a> RestClient<'a> {
     /// or a `T` representing the response, deserialised from JSON.
     pub fn delete_json_as<T: Decodable>(&mut self) -> Result<T, String> {
         let body = try!(self.delete().map_err(|err| err.to_string()));
-        json::decode(&*body).map_err(|err| err.to_string())
+        json::decode(&*body).map_err(|err| format!("{}. Server response: {}",
+                                                       err.to_string(),
+                                                       body
+                                                   )
+                                     )
     }
 
     /// Sends a POST request and returns either an error
@@ -165,7 +173,11 @@ impl<'a> RestClient<'a> {
     /// or a `T` representing the response, deserialised from JSON.
     pub fn post_json_as<T: Decodable>(&mut self) -> Result<T, String> {
         let body = try!(self.post().map_err(|err| err.to_string()));
-        json::decode(&*body).map_err(|err| err.to_string())
+        json::decode(&*body).map_err(|err| format!("{}. Server response: {}",
+                                                       err.to_string(),
+                                                       body
+                                                   )
+                                         )
     }
 
     /// Sends a PUT request and returns either an error
@@ -185,6 +197,10 @@ impl<'a> RestClient<'a> {
     /// or a `T` representing the response, deserialised from JSON.
     pub fn put_json_as<T: Decodable>(&mut self) -> Result<T, String> {
         let body = try!(self.put().map_err(|err| err.to_string()));
-        json::decode(&*body).map_err(|err| err.to_string())
+        json::decode(&*body).map_err(|err| format!("{}. Server response: {}",
+                                                       err.to_string(),
+                                                       body
+                                                   )
+                                         )
     }
 }
