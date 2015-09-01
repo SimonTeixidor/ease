@@ -31,14 +31,12 @@ impl<'a> RestClient<'a> {
 
     /// Sets one parameter. On a GET or DELETE request, this parameter will
     /// be stored in the URL. On a POST or PUT request, it is stored in the
-    /// body of the request. Hence, if you call this method on a POST or 
+    /// body of the request. Hence, if you call this method on a POST or
     /// PUT request, you cannot also call `body`.
     pub fn param(&'a mut self, key: &'a str, value: &'a str) -> &'a mut RestClient<'a> {
         if let Some(ref mut p) = self.params {
             p.push((key, value));
-        }
-        else
-        {
+        } else {
             let mut v = Vec::new();
             v.push((key, value));
             self.params = Some(v);
@@ -48,18 +46,16 @@ impl<'a> RestClient<'a> {
 
     /// Sets many parameters. On a GET or DELETE request, these parameters will
     /// be stored in the URL. On a POST or PUT request, they are stored in the
-    /// body of the request. Hence, if you call this method on a POST or 
+    /// body of the request. Hence, if you call this method on a POST or
     /// PUT request, you cannot also call `body`.
-    pub fn params<T>(&'a mut self, values: T)
-        -> &'a mut RestClient<'a>
-        where T: IntoIterator<Item=(&'a str, &'a str)> {
+    pub fn params<T>(&'a mut self, values: T) -> &'a mut RestClient<'a>
+        where T: IntoIterator<Item = (&'a str, &'a str)>
+    {
         if let Some(ref mut p) = self.params {
             for value in values {
                 p.push(value);
             }
-        }
-        else
-        {
+        } else {
             let mut v = Vec::new();
             for value in values {
                 v.push(value);
@@ -80,9 +76,7 @@ impl<'a> RestClient<'a> {
     pub fn header<H: Header + HeaderFormat>(&'a mut self, header: H) -> &'a mut RestClient<'a> {
         if let Some(ref mut h) = self.headers {
             h.set(header);
-        }
-        else
-        {
+        } else {
             let mut v = Headers::new();
             v.set(header);
             self.headers = Some(v);
@@ -98,7 +92,7 @@ impl<'a> RestClient<'a> {
         let mut req = try!(req.start());
 
         if let Some(body) = self.body.as_ref() {
-           try!(req.write_all(body.as_bytes()));
+            try!(req.write_all(body.as_bytes()));
         }
 
         let mut resp = try!(req.send());
@@ -125,11 +119,7 @@ impl<'a> RestClient<'a> {
     /// or a `T` representing the response, deserialised from JSON.
     pub fn get_json_as<T: Decodable>(&mut self) -> Result<T, String> {
         let body = try!(self.get().map_err(|err| err.to_string()));
-        json::decode(&*body).map_err(|err| format!("{}. Server response: {}",
-                                                       err.to_string(),
-                                                       body
-                                                   )
-                                     )
+        json::decode(&*body).map_err(|err| format!("{}. Server response: {}", err.to_string(), body))
     }
 
     /// Sends a DELETE request and returns either an error
@@ -149,11 +139,7 @@ impl<'a> RestClient<'a> {
     /// or a `T` representing the response, deserialised from JSON.
     pub fn delete_json_as<T: Decodable>(&mut self) -> Result<T, String> {
         let body = try!(self.delete().map_err(|err| err.to_string()));
-        json::decode(&*body).map_err(|err| format!("{}. Server response: {}",
-                                                       err.to_string(),
-                                                       body
-                                                   )
-                                     )
+        json::decode(&*body).map_err(|err| format!("{}. Server response: {}", err.to_string(), body))
     }
 
     /// Sends a POST request and returns either an error
@@ -173,11 +159,7 @@ impl<'a> RestClient<'a> {
     /// or a `T` representing the response, deserialised from JSON.
     pub fn post_json_as<T: Decodable>(&mut self) -> Result<T, String> {
         let body = try!(self.post().map_err(|err| err.to_string()));
-        json::decode(&*body).map_err(|err| format!("{}. Server response: {}",
-                                                       err.to_string(),
-                                                       body
-                                                   )
-                                         )
+        json::decode(&*body).map_err(|err| format!("{}. Server response: {}", err.to_string(), body))
     }
 
     /// Sends a PUT request and returns either an error
@@ -197,10 +179,6 @@ impl<'a> RestClient<'a> {
     /// or a `T` representing the response, deserialised from JSON.
     pub fn put_json_as<T: Decodable>(&mut self) -> Result<T, String> {
         let body = try!(self.put().map_err(|err| err.to_string()));
-        json::decode(&*body).map_err(|err| format!("{}. Server response: {}",
-                                                       err.to_string(),
-                                                       body
-                                                   )
-                                         )
+        json::decode(&*body).map_err(|err| format!("{}. Server response: {}", err.to_string(), body))
     }
 }
