@@ -1,39 +1,8 @@
 extern crate ease;
 
-use ease::{Url, RestClient};
+use ease::{Url, Request};
 
 fn main() {
     let url = Url::parse("http://httpbin.org/get").unwrap();
-    println!("{}",
-             RestClient::new(url)
-                        .param("YAYA", "NENE")
-                        .get()
-                        .unwrap()
-            );
-
-    println!("\n");
-
-    let url = Url::parse("http://httpbin.org/post").unwrap();
-    println!("{}",
-             RestClient::new(url)
-                        .param("foo", "bar")
-                        .post()
-                        .unwrap()
-            );
-
-    let url = Url::parse("http://httpbin.org/put").unwrap();
-    println!("{}",
-             RestClient::new(url)
-                        .param("foo", "bar")
-                        .put()
-                        .unwrap()
-            );
-
-    let url = Url::parse("http://httpbin.org/delete").unwrap();
-    println!("{}",
-             RestClient::new(url)
-                        .param("foo", "bar")
-                        .delete()
-                        .unwrap()
-            );
+    println!("{}", Request::new(url).param("foo", "bar").get().unwrap().body);
 }

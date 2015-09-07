@@ -2,7 +2,7 @@ extern crate ease;
 extern crate rustc_serialize;
 
 use std::collections::HashMap;
-use ease::{Url, RestClient};
+use ease::{Url, Request};
 
 #[derive(RustcDecodable, Debug)]
 struct Response {
@@ -18,14 +18,8 @@ struct Response {
 
 fn main() {
     let url = Url::parse("http://httpbin.org/post").unwrap();
-    println!("{:?}",
-             RestClient::new(url)
-                        .post_json_as::<Response>()
-        );
+    println!("{:#?}", Request::new(url).post().unwrap().json_as::<Response>());
 
     let url = Url::parse("http://httpbin.org/get").unwrap();
-    println!("{:?}",
-             RestClient::new(url)
-                        .get()
-        );
+    println!("{:#?}", Request::new(url).get().unwrap().json_as::<Response>());
 }
