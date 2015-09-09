@@ -18,8 +18,8 @@ struct Response {
 
 fn main() {
     let url = Url::parse("http://httpbin.org/post").unwrap();
-    println!("{:#?}", Request::new(url).post().unwrap().json_as::<Response>());
+    println!("{:#?}", Request::new(url).post().and_then(|res| res.json_as::<Response>()));
 
     let url = Url::parse("http://httpbin.org/get").unwrap();
-    println!("{:#?}", Request::new(url).get().unwrap().json_as::<Response>());
+    println!("{:#?}", Request::new(url).get().and_then(|res| res.json_as::<Response>()));
 }
