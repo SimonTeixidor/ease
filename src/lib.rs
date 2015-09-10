@@ -1,11 +1,12 @@
 extern crate hyper;
 extern crate url;
-extern crate rustc_serialize;
+extern crate serde;
+extern crate serde_json;
 
 use std::io::{Read, Write};
 use std::io::Error as IoError;
 
-use rustc_serialize::{json, Decodable};
+use serde::de::Deserialize;
 use hyper::client::Request as HyperRequest;
 use hyper::client::Response as HyperResponse;
 use hyper::method::Method;
@@ -23,7 +24,7 @@ pub use hyper::status::StatusCode;
 #[derive(Debug)]
 pub enum Error {
     UnsuccessfulResponse(Response),
-    Json(json::DecoderError),
+    Json(serde_json::error::Error),
     Hyper(HyperError)
 }
 
@@ -51,8 +52,8 @@ impl Response {
         hyper_response.read_to_string(&mut body).map(|_| Response{ hyper_response: hyper_response, body: body })
     }
 
-    pub fn json_as<T: Decodable>(&self) -> Result<T, Error> {
-        json::decode(&*self.body).map_err(|e| Error::Json(e))
+    pub fn json_as<T: Deserialize>(&self) -> Result<T, Error> {
+        serde_json::from_str(&*self.body).map_err(|e| Error::Json(e))
     }
 }
 
