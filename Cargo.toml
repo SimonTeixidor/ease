@@ -7,7 +7,6 @@ version = "0.4.0"
 authors = ["Simon Persson <simon@flaskpost.org>"]
 keywords = ["rest", "api", "client", "web"]
 license = "MIT"
-build = "src/build.rs"
 
 [dependencies]
 hyper = "*"
@@ -15,13 +14,16 @@ url = "*"
 serde = "*"
 serde_json = "*"
 
-[build-dependencies]
-serde_codegen = "*"
-syntex = "*"
+[features]
+nightly = ["serde_macros"]
+
+[dependencies.serde_macros]
+version = "*"
+optional = true
 
 [[ example ]]
 name = "json"
-path = "examples/json/json.rs"
+path = "examples/json.rs"
 
 [[ example ]]
 name = "strings"

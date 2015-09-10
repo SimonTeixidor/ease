@@ -1,3 +1,6 @@
+#![feature(custom_derive, plugin)]
+#![plugin(serde_macros)]
+
 extern crate ease;
 extern crate serde;
 extern crate serde_json;
@@ -5,7 +8,17 @@ extern crate serde_json;
 use std::collections::HashMap;
 use ease::{Url, Request};
 
-include!(concat!(env!("OUT_DIR"),"/json.rs"));
+#[derive(Deserialize, Debug)]
+struct Response {
+    args: HashMap<String, String>,
+    data: Option<String>,
+    files: Option<HashMap<String, String>>,
+    form: Option<HashMap<String, String>>,
+    headers: HashMap<String, String>,
+    json: Option<String>,
+    origin: String,
+    url: String,
+}
 
 fn main() {
     let url = Url::parse("http://httpbin.org/post").unwrap();
