@@ -77,7 +77,7 @@ impl<'a> Request<'a> {
     /// be stored in the URL. On a POST or PUT request, it is stored in the
     /// body of the request. Hence, if you call this method on a POST or
     /// PUT request, you cannot also call `body`.
-    pub fn param(&'a mut self, key: &'a str, value: &'a str) -> &'a mut Request<'a> {
+    pub fn param(&mut self, key: &'a str, value: &'a str) -> &mut Request<'a> {
         if let Some(ref mut p) = self.params {
             p.push((key, value));
         } else {
@@ -92,7 +92,7 @@ impl<'a> Request<'a> {
     /// be stored in the URL. On a POST or PUT request, they are stored in the
     /// body of the request. Hence, if you call this method on a POST or
     /// PUT request, you cannot also call `body`.
-    pub fn params<T>(&'a mut self, values: T) -> &'a mut Request<'a>
+    pub fn params<T>(&mut self, values: T) -> &mut Request<'a>
         where T: IntoIterator<Item = (&'a str, &'a str)>
     {
         if let Some(ref mut p) = self.params {
@@ -111,13 +111,13 @@ impl<'a> Request<'a> {
 
     /// Writes a `String` to the body of the request. Don't call this
     /// method if you also call `param` on a PUT or POST request.
-    pub fn body(&'a mut self, body: String) -> &'a mut Request<'a> {
+    pub fn body(&mut self, body: String) -> &mut Request<'a> {
         self.body = Some(body);
         self
     }
 
     /// Sets a header for the request.
-    pub fn header<H: Header + HeaderFormat>(&'a mut self, header: H) -> &'a mut Request<'a> {
+    pub fn header<H: Header + HeaderFormat>(&mut self, header: H) -> &mut Request<'a> {
         if let Some(ref mut h) = self.headers {
             h.set(header);
         } else {
