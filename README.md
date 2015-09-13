@@ -6,7 +6,13 @@ Ease - HTTP clients for Rust [![Build Status](https://travis-ci.org/SimonPersson
 Examples
 ========
 
-Make a GET call and print the result:
+In `Cargo.toml`, put:
+```toml
+[dependencies]
+ease = "*"
+```
+
+Make a GET request and print the result:
 ```rust
 extern crate ease;
 
@@ -18,8 +24,36 @@ fn main() {
 }
 ```
 
-Responses can also be deserialized from JSON, see `examples/json` for an
-example.
+Make a POST request and deserialize the response from JSON using
+[serde](https://github.com/serde-rs/serde):
+```rust
+#![feature(custom_derive, plugin)]
+#![plugin(serde_macros)]
+
+extern crate ease;
+extern crate serde;
+extern crate serde_json;
+
+use std::collections::HashMap;
+use ease::{Url, Request};
+
+#[derive(Deserialize, Debug)]
+struct PostResponse {
+    args: HashMap<String, String>,
+    data: Option<String>,
+    files: Option<HashMap<String, String>>,
+    form: Option<HashMap<String, String>>,
+    headers: HashMap<String, String>,
+    json: Option<String>,
+    origin: String,
+    url: String,
+}
+
+fn main() {
+    let url = Url::parse("http://httpbin.org/post").unwrap();
+    println!("{:#?}", Request::new(url).post().and_then(|res| res.json_as::<PostResponse>()));
+}
+```
 
 [Documentation](http://simonpersson.github.io/ease/)
 ====================================================
