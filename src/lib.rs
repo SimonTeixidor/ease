@@ -54,7 +54,7 @@ impl Response {
 
     /// Deserializes the body of the response from JSON into
     /// a `T`.
-    pub fn json_as<T: Deserialize>(&self) -> Result<T, Error> {
+    pub fn from_json<T: Deserialize>(&self) -> Result<T, Error> {
         serde_json::from_str(&*self.body).map_err(|e| Error::Json(e))
     }
 }

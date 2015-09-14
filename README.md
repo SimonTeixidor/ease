@@ -51,7 +51,7 @@ struct PostResponse {
 
 fn main() {
     let url = Url::parse("http://httpbin.org/post").unwrap();
-    println!("{:#?}", Request::new(url).post().and_then(|res| res.json_as::<PostResponse>()));
+    println!("{:#?}", Request::new(url).post().and_then(|res| res.from_json::<PostResponse>()));
 }
 ```
 
