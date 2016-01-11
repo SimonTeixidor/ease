@@ -6,7 +6,7 @@ name = "ease"
 version = "0.4.1"
 authors = ["Simon Persson <simon@flaskpost.org>"]
 keywords = ["rest", "api", "client", "web"]
-license = "MIT"
+license = "MIT OR Apache-2.0"
 
 [dependencies]
 hyper = "*"
