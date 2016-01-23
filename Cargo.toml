@@ -9,10 +9,10 @@ keywords = ["rest", "api", "client", "web"]
 license = "MIT"
 
 [dependencies]
-hyper = "*"
-url = "*"
-serde = "*"
-serde_json = "*"
+hyper = "0.7"
+url = "0.5"
+serde = "0.6"
+serde_json = "0.6"
 
 [features]
 nightly = ["serde_macros"]
