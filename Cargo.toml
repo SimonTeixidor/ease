@@ -3,22 +3,22 @@ description = "A library for building REST clients"
 repository = "https://github.com/SimonPersson/ease"
 documentation = "http://simonpersson.github.io/ease/ease/index.html"
 name = "ease"
-version = "0.4.1"
+version = "0.4.2"
 authors = ["Simon Persson <simon@flaskpost.org>"]
 keywords = ["rest", "api", "client", "web"]
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-hyper = "0.7"
-url = "0.5"
-serde = "0.6"
-serde_json = "0.6"
+hyper = "^0.7.2"
+url = "^0.5.3"
+serde = "^0.6.11"
+serde_json = "^0.6.0"
 
 [features]
 nightly = ["serde_macros"]
 
 [dependencies.serde_macros]
-version = "*"
+version = "^0.6.11"
 optional = true
 
 [[ example ]]
