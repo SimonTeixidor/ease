@@ -5,6 +5,7 @@ extern crate serde_json;
 
 use std::io::{Read, Write};
 use std::io::Error as IoError;
+use std::time::Duration;
 
 use serde::de::Deserialize;
 use hyper::client::Request as HyperRequest;
@@ -25,7 +26,7 @@ pub use hyper::status::StatusCode;
 pub enum Error {
     UnsuccessfulResponse(Response),
     Json(serde_json::error::Error),
-    Hyper(HyperError)
+    Hyper(HyperError),
 }
 
 impl From<HyperError> for Error {
@@ -43,13 +44,18 @@ impl From<IoError> for Error {
 #[derive(Debug)]
 pub struct Response {
     pub hyper_response: HyperResponse,
-    pub body: String
+    pub body: String,
 }
 
 impl Response {
     fn from_hyper_response(mut hyper_response: HyperResponse) -> Result<Response, IoError> {
         let mut body = String::new();
-        hyper_response.read_to_string(&mut body).map(|_| Response{ hyper_response: hyper_response, body: body })
+        hyper_response.read_to_string(&mut body).map(|_| {
+            Response {
+                hyper_response: hyper_response,
+                body: body,
+            }
+        })
     }
 
     /// Deserializes the body of the response from JSON into
@@ -64,13 +70,20 @@ pub struct Request<'a> {
     url: Url,
     params: Option<Vec<(&'a str, &'a str)>>,
     body: Option<String>,
+    read_timeout: Option<Duration>,
     headers: Option<Headers>,
 }
 
 
 impl<'a> Request<'a> {
     pub fn new(url: Url) -> Request<'a> {
-        Request { url: url, params: None, body: None, headers: None }
+        Request {
+            url: url,
+            params: None,
+            body: None,
+            read_timeout: None,
+            headers: None,
+        }
     }
 
     /// Sets one parameter. On a GET or DELETE request, this parameter will
@@ -128,10 +141,18 @@ impl<'a> Request<'a> {
         self
     }
 
+    /// Sets a read timeout for the response.
+    pub fn read_timeout(&mut self, timeout: Duration) -> &mut Request<'a> {
+        self.read_timeout = Some(timeout);
+        self
+    }
+
     fn send_request(&mut self, mut req: HyperRequest<Fresh>) -> Result<Response, Error> {
         if let Some(headers) = self.headers.as_ref() {
             req.headers_mut().extend(headers.iter());
         }
+
+        let _ = req.set_read_timeout(self.read_timeout);
 
         let mut req = try!(req.start());
 
