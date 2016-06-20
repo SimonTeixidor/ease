@@ -9,17 +9,13 @@ keywords = ["rest", "api", "client", "web"]
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-hyper = "^0.7.2"
-url = "^0.5.3"
-serde = "^0.6.11"
-serde_json = "^0.6.0"
+hyper = "^0.9.4"
+url = "^1.1.1"
+serde = "^0.7.10"
+serde_json = "^0.7.1"
 
-[features]
-nightly = ["serde_macros"]
-
-[dependencies.serde_macros]
-version = "^0.6.11"
-optional = true
+[dev-dependencies]
+serde_macros = "^0.7.10"
 
 [[ example ]]
 name = "json"

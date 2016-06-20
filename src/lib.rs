@@ -176,7 +176,7 @@ impl<'a> Request<'a> {
         let mut url = self.url.clone();
 
         if let Some(ref params) = self.params {
-            url.set_query_from_pairs(params.into_iter().map(|&x| x));
+            url.query_pairs_mut().extend_pairs(params.into_iter().map(|&x| x));
         }
 
         let req = try!(HyperRequest::new(Method::Get, url));
@@ -189,7 +189,7 @@ impl<'a> Request<'a> {
         let mut url = self.url.clone();
 
         if let Some(ref params) = self.params {
-            url.set_query_from_pairs(params.into_iter().map(|&x| x));
+            url.query_pairs_mut().extend_pairs(params.into_iter().map(|&x| x));
         }
 
         let req = try!(HyperRequest::new(Method::Delete, url));
@@ -202,7 +202,9 @@ impl<'a> Request<'a> {
         let url = self.url.clone();
 
         if let Some(ref params) = self.params {
-            self.body = Some(url::form_urlencoded::serialize(params.into_iter()));
+            let mut serializer = url::form_urlencoded::Serializer::new(String::new());
+            serializer.extend_pairs(params);
+            self.body = Some(serializer.finish());
         }
 
         let req = try!(HyperRequest::new(Method::Post, url));
@@ -215,7 +217,9 @@ impl<'a> Request<'a> {
         let url = self.url.clone();
 
         if let Some(ref params) = self.params {
-            self.body = Some(url::form_urlencoded::serialize(params.into_iter()));
+            let mut serializer = url::form_urlencoded::Serializer::new(String::new());
+            serializer.extend_pairs(params);
+            self.body = Some(serializer.finish());
         }
 
         let req = try!(HyperRequest::new(Method::Put, url));
