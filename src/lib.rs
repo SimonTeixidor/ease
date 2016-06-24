@@ -4,6 +4,7 @@ extern crate serde;
 extern crate serde_json;
 
 use std::error::Error as StdError;
+use std::fmt::{self, Display, Formatter};
 use std::io::{Read, Write};
 use std::io::Error as IoError;
 use std::time::Duration;
@@ -28,6 +29,16 @@ pub enum Error {
     UnsuccessfulResponse(Response),
     Json(serde_json::error::Error),
     Hyper(HyperError),
+}
+
+impl Display for Error {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        match *self {
+            Error::UnsuccessfulResponse(ref rsp)    => write!(f, "server response failed: {:?}", rsp),
+            Error::Json(ref error)                  => write!(f, "json parse error: {}", error),
+            Error::Hyper(ref error)                 => write!(f, "HTTP communication error: {}", error),
+        }
+    }
 }
 
 impl StdError for Error {
