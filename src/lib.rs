@@ -3,6 +3,7 @@ extern crate url;
 extern crate serde;
 extern crate serde_json;
 
+use std::error::Error as StdError;
 use std::io::{Read, Write};
 use std::io::Error as IoError;
 use std::time::Duration;
@@ -27,6 +28,20 @@ pub enum Error {
     UnsuccessfulResponse(Response),
     Json(serde_json::error::Error),
     Hyper(HyperError),
+}
+
+impl StdError for Error {
+    fn description(&self) -> &str {
+        "ease error"
+    }
+
+    fn cause(&self) -> Option<&StdError> {
+        match *self {
+            Error::Json(ref error)  => Some(error),
+            Error::Hyper(ref error) => Some(error),
+            _                       => None,
+        }
+    }
 }
 
 impl From<HyperError> for Error {
