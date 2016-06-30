@@ -34,9 +34,9 @@ pub enum Error {
 impl Display for Error {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match *self {
-            Error::UnsuccessfulResponse(ref rsp)    => write!(f, "server response failed: {:?}", rsp),
-            Error::Json(ref error)                  => write!(f, "json parse error: {}", error),
-            Error::Hyper(ref error)                 => write!(f, "HTTP communication error: {}", error),
+            Error::UnsuccessfulResponse(ref rsp) => write!(f, "server response failed: {:?}", rsp),
+            Error::Json(ref error) => write!(f, "json parse error: {}", error),
+            Error::Hyper(ref error) => write!(f, "HTTP communication error: {}", error),
         }
     }
 }
@@ -48,9 +48,9 @@ impl StdError for Error {
 
     fn cause(&self) -> Option<&StdError> {
         match *self {
-            Error::Json(ref error)  => Some(error),
+            Error::Json(ref error) => Some(error),
             Error::Hyper(ref error) => Some(error),
-            _                       => None,
+            _ => None,
         }
     }
 }
