@@ -16,7 +16,7 @@ use hyper::method::Method;
 use hyper::net::Fresh;
 
 #[doc(no_inline)]
-pub use hyper::header::{Headers, Header, HeaderFormat, UserAgent};
+pub use hyper::header;
 #[doc(no_inline)]
 pub use url::Url;
 #[doc(no_inline)]
@@ -97,7 +97,7 @@ pub struct Request<'a> {
     params: Option<Vec<(&'a str, &'a str)>>,
     body: Option<String>,
     read_timeout: Option<Duration>,
-    headers: Option<Headers>,
+    headers: Option<header::Headers>,
 }
 
 
@@ -156,11 +156,13 @@ impl<'a> Request<'a> {
     }
 
     /// Sets a header for the request.
-    pub fn header<H: Header + HeaderFormat>(&mut self, header: H) -> &mut Request<'a> {
+    pub fn header<H: header::Header + header::HeaderFormat>(&mut self,
+                                                            header: H)
+                                                            -> &mut Request<'a> {
         if let Some(ref mut h) = self.headers {
             h.set(header);
         } else {
-            let mut v = Headers::new();
+            let mut v = header::Headers::new();
             v.set(header);
             self.headers = Some(v);
         }
