@@ -31,8 +31,6 @@ Make a POST request and deserialize the response from JSON using
 #![plugin(serde_macros)]
 
 extern crate ease;
-extern crate serde;
-extern crate serde_json;
 
 use std::collections::HashMap;
 use ease::{Url, Request};
