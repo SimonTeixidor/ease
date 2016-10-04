@@ -92,17 +92,17 @@ impl Response {
 }
 
 #[derive(Clone)]
-pub struct Request<'a> {
+pub struct Request {
     url: Url,
-    params: Option<Vec<(&'a str, &'a str)>>,
+    params: Option<Vec<(String, String)>>,
     body: Option<String>,
     read_timeout: Option<Duration>,
     headers: Option<header::Headers>,
 }
 
 
-impl<'a> Request<'a> {
-    pub fn new(url: Url) -> Request<'a> {
+impl Request {
+    pub fn new(url: Url) -> Request {
         Request {
             url: url,
             params: None,
@@ -116,12 +116,12 @@ impl<'a> Request<'a> {
     /// be stored in the URL. On a POST or PUT request, it is stored in the
     /// body of the request. Hence, if you call this method on a POST or
     /// PUT request, you cannot also call `body`.
-    pub fn param(&mut self, key: &'a str, value: &'a str) -> &mut Request<'a> {
+    pub fn param<S>(&mut self, key: S, value: S) -> &mut Request where S: Into<String> {
         if let Some(ref mut p) = self.params {
-            p.push((key, value));
+            p.push((key.into(), value.into()));
         } else {
             let mut v = Vec::new();
-            v.push((key, value));
+            v.push((key.into(), value.into()));
             self.params = Some(v);
         }
         self
@@ -131,17 +131,18 @@ impl<'a> Request<'a> {
     /// be stored in the URL. On a POST or PUT request, they are stored in the
     /// body of the request. Hence, if you call this method on a POST or
     /// PUT request, you cannot also call `body`.
-    pub fn params<T>(&mut self, values: T) -> &mut Request<'a>
-        where T: IntoIterator<Item = (&'a str, &'a str)>
+    pub fn params<S, T>(&mut self, values: T) -> &mut Request
+        where S: Into<String>,
+              T: IntoIterator<Item = (S, S)>
     {
         if let Some(ref mut p) = self.params {
             for value in values {
-                p.push(value);
+                p.push((value.0.into(), value.1.into()));
             }
         } else {
             let mut v = Vec::new();
             for value in values {
-                v.push(value);
+                v.push((value.0.into(), value.1.into()));
             }
             self.params = Some(v);
         }
@@ -150,7 +151,7 @@ impl<'a> Request<'a> {
 
     /// Writes a `String` to the body of the request. Don't call this
     /// method if you also call `param` on a PUT or POST request.
-    pub fn body(&mut self, body: String) -> &mut Request<'a> {
+    pub fn body(&mut self, body: String) -> &mut Request {
         self.body = Some(body);
         self
     }
@@ -158,7 +159,7 @@ impl<'a> Request<'a> {
     /// Sets a header for the request.
     pub fn header<H: header::Header + header::HeaderFormat>(&mut self,
                                                             header: H)
-                                                            -> &mut Request<'a> {
+                                                            -> &mut Request {
         if let Some(ref mut h) = self.headers {
             h.set(header);
         } else {
@@ -170,7 +171,7 @@ impl<'a> Request<'a> {
     }
 
     /// Sets a read timeout for the response.
-    pub fn read_timeout(&mut self, timeout: Duration) -> &mut Request<'a> {
+    pub fn read_timeout(&mut self, timeout: Duration) -> &mut Request {
         self.read_timeout = Some(timeout);
         self
     }
@@ -204,7 +205,7 @@ impl<'a> Request<'a> {
         let mut url = self.url.clone();
 
         if let Some(ref params) = self.params {
-            url.query_pairs_mut().extend_pairs(params.into_iter().map(|&x| x));
+            url.query_pairs_mut().extend_pairs(params);
         }
 
         let req = try!(HyperRequest::new(Method::Get, url));
@@ -217,7 +218,7 @@ impl<'a> Request<'a> {
         let mut url = self.url.clone();
 
         if let Some(ref params) = self.params {
-            url.query_pairs_mut().extend_pairs(params.into_iter().map(|&x| x));
+            url.query_pairs_mut().extend_pairs(params);
         }
 
         let req = try!(HyperRequest::new(Method::Delete, url));
