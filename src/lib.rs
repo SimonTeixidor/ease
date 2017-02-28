@@ -116,7 +116,9 @@ impl Request {
     /// be stored in the URL. On a POST or PUT request, it is stored in the
     /// body of the request. Hence, if you call this method on a POST or
     /// PUT request, you cannot also call `body`.
-    pub fn param<S>(&mut self, key: S, value: S) -> &mut Request where S: Into<String> {
+    pub fn param<S>(&mut self, key: S, value: S) -> &mut Request
+        where S: Into<String>
+    {
         if let Some(ref mut p) = self.params {
             p.push((key.into(), value.into()));
         } else {
@@ -157,9 +159,7 @@ impl Request {
     }
 
     /// Sets a header for the request.
-    pub fn header<H: header::Header + header::HeaderFormat>(&mut self,
-                                                            header: H)
-                                                            -> &mut Request {
+    pub fn header<H: header::Header + header::HeaderFormat>(&mut self, header: H) -> &mut Request {
         if let Some(ref mut h) = self.headers {
             h.set(header);
         } else {

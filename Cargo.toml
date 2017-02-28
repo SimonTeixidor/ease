@@ -9,13 +9,13 @@ keywords = ["rest", "api", "client", "web"]
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-hyper = "^0.9.4"
+hyper = "^0.10.4"
 url = "^1.1.1"
-serde = "0.8"
-serde_json = "0.8"
+serde = "^0.9.9"
+serde_json = "^0.9.8"
 
 [dev-dependencies]
-serde_macros = "0.8"
+serde_derive = "0.9"
 
 [[ example ]]
 name = "json"

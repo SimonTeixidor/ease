@@ -1,5 +1,5 @@
-#![feature(custom_derive, plugin)]
-#![plugin(serde_macros)]
+#[macro_use]
+extern crate serde_derive;
 
 extern crate ease;
 
@@ -20,8 +20,10 @@ struct Response {
 
 fn main() {
     let url = Url::parse("http://httpbin.org/post").unwrap();
-    println!("{:#?}", Request::new(url).post().and_then(|res| res.from_json::<Response>()));
+    println!("{:#?}",
+             Request::new(url).post().and_then(|res| res.from_json::<Response>()));
 
     let url = Url::parse("http://httpbin.org/get").unwrap();
-    println!("{:#?}", Request::new(url).get().and_then(|res| res.from_json::<Response>()));
+    println!("{:#?}",
+             Request::new(url).get().and_then(|res| res.from_json::<Response>()));
 }
