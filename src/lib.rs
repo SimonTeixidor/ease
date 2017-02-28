@@ -14,6 +14,8 @@ use hyper::client::Request as HyperRequest;
 use hyper::client::Response as HyperResponse;
 use hyper::method::Method;
 use hyper::net::Fresh;
+use hyper::status::StatusClass::{Informational, Success, Redirection};
+use hyper::header::Cookie;
 
 #[doc(no_inline)]
 pub use hyper::header;
@@ -88,6 +90,25 @@ impl Response {
     /// a `T`.
     pub fn from_json<T: Deserialize>(&self) -> Result<T, Error> {
         serde_json::from_str(&*self.body).map_err(|e| Error::Json(e))
+    }
+
+    pub fn get_cookies(&self) -> Vec<String> {
+        self.hyper_response
+            .headers
+            .get_raw("Set-Cookie")
+            .unwrap()
+            .to_vec()
+            .iter()
+            .map(|v| {
+                v.iter()
+                    .map(|&c| c as char)
+                    .collect::<String>()
+                    .split(";")
+                    .next()
+                    .unwrap()
+                    .to_owned()
+            })
+            .collect::<Vec<_>>()
     }
 }
 
@@ -170,6 +191,10 @@ impl Request {
         self
     }
 
+    pub fn cookies(&mut self, cookies: Vec<String>) -> &mut Request {
+        self.header(Cookie(cookies))
+    }
+
     /// Sets a read timeout for the response.
     pub fn read_timeout(&mut self, timeout: Duration) -> &mut Request {
         self.read_timeout = Some(timeout);
@@ -192,10 +217,11 @@ impl Request {
         let resp = try!(req.send());
         let resp = try!(Response::from_hyper_response(resp));
 
-        if resp.hyper_response.status.is_success() {
-            Ok(resp)
-        } else {
-            Err(Error::UnsuccessfulResponse(resp))
+        match resp.hyper_response.status.class() {
+            Informational => Ok(resp),
+            Success => Ok(resp),
+            Redirection => Ok(resp),
+            _ => Err(Error::UnsuccessfulResponse(resp)),
         }
     }
 

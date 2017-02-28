@@ -24,3 +24,7 @@ path = "examples/json.rs"
 [[ example ]]
 name = "strings"
 path = "examples/strings.rs"
+
+[[ example ]]
+name = "cookies"
+path = "examples/cookies.rs"
