@@ -9,8 +9,8 @@ keywords = ["rest", "api", "client", "web"]
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-hyper = "^0.9.4"
-url = "^1.1.1"
+hyper = "0.10"
+url = "1.1"
 serde = "0.8"
 serde_json = "0.8"
 
